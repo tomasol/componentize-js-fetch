@@ -1,0 +1,31 @@
+name: check
+
+on:
+  workflow_dispatch:
+  push:
+
+defaults:
+  run:
+    shell: bash -xe {0}
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - version: 0.17.0
+          - version: 0.18.3
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - uses: nixbuild/nix-quick-install-action@63ca48f939ee3b8d835f4126562537df0fee5b91
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Populate the nix store
+        run: nix develop . --command echo
+      - name: Test with componentize-js ${{ matrix.version }}
+        run: |
+          nix develop . --command ./test.sh ${{ matrix.version }}
