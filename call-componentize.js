@@ -31,7 +31,7 @@ const { component } = await componentize(jsSource, {
   enableAot: false,
   disableFeatures: [],
   enableWizerLogging: true,
-  wizerBin,
+  //wizerBin,
 });
 await mkdir('dist', { recursive: true });
 await writeFile(`dist/fetch-server.wasm`, component);
